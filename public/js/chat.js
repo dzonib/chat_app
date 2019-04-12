@@ -1,18 +1,17 @@
 const socket = io()
 
-// name must match to one that server emmited
-socket.on('countUpdated', (count) => {
-    console.log('The count has been updated! ', count)
+// with socket.on you recive event. There are two arguments: 
+// 1. event name wich must match one you put in server on socket.emmit(), 
+// and callback func wich gives you data you have put in socket.emmit , names dont have to match,
+// but order does)
+
+socket.on('countUpdated', (countFromBackend) => {
+    console.log('the count has been updated ', countFromBackend)
 })
 
-document.querySelector('#increment').addEventListener('click', () => {
-    socket.emit('increment')
-})
-
-document.querySelector('#reset').addEventListener('click', () => {
-    socket.emit('resert')
-})
-
-document.querySelector('#decrement').addEventListener('click', () => {
-    socket.emit('decrement')
-})
+document.querySelector('#increment-btn')
+    .addEventListener('click', () => {
+        console.log('add')
+        // on click emit event from client
+        socket.emit("increment")
+    })

@@ -5,6 +5,7 @@ const socketIo = require('socket.io')
 
 const app = express()
 
+// need to configure server like this so we can connect it to socket io
 const server = http.createServer(app)
 const io = socketIo(server)
 
@@ -16,32 +17,18 @@ app.use(express.static(publicDirectoryPath))
 
 let count = 0
 
-
 io.on('connection', (socket) => {
-    console.log('New WebSocket connection')
+    console.log('New WebSocket connection!')
 
+    // create event and emit it to connected client
     socket.emit('countUpdated', count)
 
+    // listen for increment event from client
     socket.on('increment', () => {
+        // increment count and send current count fo client
         count++
-
-        // emits event to every connection
-        io.emit('countUpdated', count)
+        // socket.emit('countUpdated', count) this emits only to single user
     })
-
-    socket.on('resert', () => {
-        count = 0
-
-        io.emit('countUpdated', count)
-    })
-
-    socket.on('decrement', () => {
-        count <= 0 ? console.log('Count can not be less then 0') : count--
-
-        io.emit('countUpdated', count)
-    })
-
-
 })
 
 
