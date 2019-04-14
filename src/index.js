@@ -20,7 +20,7 @@ let count = 0
 io.on('connection', (socket) => {
     console.log('New WebSocket connection!')
 
-    // create event and emit it to connected client
+    // create event and emit it to client
     socket.emit('countUpdated', count)
 
     // listen for increment event from client
@@ -28,6 +28,8 @@ io.on('connection', (socket) => {
         // increment count and send current count fo client
         count++
         // socket.emit('countUpdated', count) this emits only to single user
+
+        io.emit('countUpdated', count) // this one emits to all connected users
     })
 })
 
