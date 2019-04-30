@@ -2,6 +2,7 @@ const path = require("path")
 const http = require("http")
 const express = require("express")
 const socketIo = require("socket.io")
+const Filter = require("bad-words")
 
 const app = express()
 
@@ -23,17 +24,29 @@ io.on("connection", socket => {
     // send it to everybody except this socket
     socket.broadcast.emit("message", "A new user has joined")
 
-    socket.on("sendLocation", ({latitude, longitude}) => {
+    socket.on("sendLocation", ({ latitude, longitude }, callback) => {
+        
         io.emit("message", `https://google.com/maps?q=${latitude},${longitude}`)
+
+        callback("Location Shared yo")
     })
 
-    socket.on("chat-message", chatMsg => {
+    socket.on("chat-message", (chatMsg, callback) => {
+        // filtering bad words
+        const filter = new Filter()
+
+        if (filter.isProfane(chatMsg)) {
+            return callback("Profanity is not allowed!")
+        }
+
         // send it to everyone
         io.emit("message", chatMsg)
+
+        callback()
     })
 
     // custom event "disconnect"
-    socket.on('disconnect', () => {
+    socket.on("disconnect", () => {
         io.emit("message", "User has left")
     })
 })
