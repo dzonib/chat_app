@@ -24,6 +24,8 @@ io.on("connection", socket => {
     // send it to everybody except this socket
     socket.broadcast.emit("message", "A new user has joined")
 
+
+    // use callback to send acknowlegement
     socket.on("sendLocation", ({ latitude, longitude }, callback) => {
         
         io.emit("message", `https://google.com/maps?q=${latitude},${longitude}`)
@@ -35,6 +37,7 @@ io.on("connection", socket => {
         // filtering bad words
         const filter = new Filter()
 
+        // check if there are bad words and return callback if there are
         if (filter.isProfane(chatMsg)) {
             return callback("Profanity is not allowed!")
         }
